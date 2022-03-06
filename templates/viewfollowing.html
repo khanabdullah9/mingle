@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <div class="row" style="margin-top:50px;">
+    <div class="col-md-6 mx-auto">
+      <div class="card">
+        <div class="card-body">
+          {% if profile_following %}
+          {% for pf in profile_following %}
+          {% if iterable_user %}
+          {% for i in iterable_user %}
+          {% if i == pf %}
+          <div class="row">
+            <div class="col-md-6 mx-auto">
+                
+              <a href="{% url 'view_profile' i.email %}" class="btn btn-outline-dark">{{i.username}}</a> <!--|join will help in converting query set object to string-->   
+              {% endif %}
+              {% endfor %}<!--line12-->
+          {% endif %}<!--line11-->
+            </div>
+          </div>
+          {% endfor %}<!--line10-->
+          {% else %}<!--line9-->
+          This user is not following anyone yet!
+          {% endif %}<!--line9--> 
+          <div class="row">
+            <div class="col">
+              <hr>
+            </div>
+          </div>      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

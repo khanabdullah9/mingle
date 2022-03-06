@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row" style="margin-top:50px;">
+        <div class="col-md-4 mx-auto">
+            <p style="text-align: center;">Friend Requests</p>
+            <div class="card">
+                <div class="card-body">
+                    {% if all_request %}
+                    {% for ar in all_request %}
+                    <div class="row">
+                        <div class="col-md-2">
+                            {% if all_images %}
+                            {% for ai in all_images %}
+                            {% with "pp_"|add:ar.username as custom_image_id%}
+                            {%if ai.image_id == custom_image_id %}
+                            <img src="{{ai.image.url}}" alt="Error" width="40" height="50" style="border-radius:50%">
+                            {% endif %}
+                            {% endwith %}
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                           {{ar.username}}
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'accept' ar %}" name="accept" id="accept" class="btn" style="background-color:#9b2727;color:white;width:100%">Accept</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'reject' ar %}" name="reject" id="reject" class="btn" style="background-color:#9b2727;color:white;width:100%">Decline</a>
+                        </div>
+                    </div>
+                    <br>
+                    {% endfor %}
+                    {% else %}
+                    <p style="text-align: center;">You have no friend requests</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    #bg-div{
+        background-image:url('{% static "images/mingle_bg_2.jpg" %}');
+        height:637px;
+    }
+    .banner-btn {
+        /*border: 1px solid #fff;*/
+        border: 1px solid #9b2727;
+        border-radius: 50px;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding: 10px 50px;
+        display: inline-block;
+        color:#9b2727;
+    
+    }
+    #button:hover{
+        background-color: #9b2727;
+        color:white;
+    }
+    #my-card{
+        padding-top:250px;
+        padding-left:200px;
+    }
+    #quote{
+        color:#9b2727;
+        font-family: gabriola;
+        font-size: 30px;
+        text-align: center;
+    }
+</style>
+
+<div id="bg-div" class="container-fluid" >
+    <div  id="my-card" class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <p id="quote">Create your own world!</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <center><a id="button" href="{% url 'signup' %}" class="banner-btn btn">Start mingling</a></center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

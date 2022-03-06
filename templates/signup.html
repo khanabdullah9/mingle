@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row" style="margin-top:50px;">
+                <div class="col-md-6 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                   <p style="margin-top:-2em;color:red"> {{form.email.errors}}
+                                    {{form.non_field_errors}}</p>
+                                    <h4>Sign up</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                            </div>
+                            <form action="{% url 'signup' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>First Name</label>
+                                        {{form.first_name}}
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Last Name</label>
+                                        {{form.last_name}}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:0.5em;">
+                                    <div class="col">
+                                        <label>Email</label>
+                                        {{form.email}}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:0.5em;">
+                                    <div class="col">
+                                        <label>username</label>
+                                        {{form.username}}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:0.5em;">
+                                    <div class="col">
+                                        <label>Password</label>
+                                        {{form.password}}
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:0.5em;">
+                                    <div class="col">
+                                        <label>Confirm Password</label>
+                                        {{form.confirm_password}}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <center><button type="submit" class="btn" style="width:100%;background-color:#9b2727;color:white">Sign Up</button></center>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:1em;">
+                                    <div class="col">
+                                        <center>Already have an account?<a href="{% url 'login' %}">Login</a></center>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

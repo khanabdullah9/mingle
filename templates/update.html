@@ -1,0 +1,92 @@
+{% extends 'base2.html' %}
+{% block title %}Update Profile{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row" style="margin-top: 25px;">
+                <div class="col-md-8 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <h2>Update</h2>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                            </div>
+                            <form action="{% url 'update_profile' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %} 
+                                {% if user %}
+                                {% for u in user %}
+                                
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p>First Name</p>
+                                        <input type="text"  value="{{u.first_name}}" class="form-control" name="first_name" id="first_name" placeholder="First Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p>Last Name</p>
+                                        <input type="text" value="{{u.last_name}}" class="form-control" name="last_name" id="last_name" placeholder="Last Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p>Email</p>
+                                        <input type="email" value="{{u.email}}" class="form-control" name="email" id="email" placeholder="Email" readonly="true">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <p>Username</p>
+                                        <input type="text" value="{{u.username}}" class="form-control" name="username" id="username" placeholder="Username">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <p>Bio</p>
+                                        {% if profile %}
+                                        {% for p in profile %}
+                                        <textarea class="form-control"   name="bio" id="bio" placeholder="About you....">{{p.bio}}</textarea>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <p>Select a profile image</p><br/>
+                                        <input type="file" name="profile_picture" id="profile_picture">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <center><button type="submit" class="btn btn-maroon btn-lg" style="width:950px;">Update</button></center>
+                                </div>
+                            </div>
+                        </form>
+                        {% endfor %}
+                                {% endif %} 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

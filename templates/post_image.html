@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Post{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row" style="margin-top: 100px;">
+                <div class="col-md-5 mx-auto">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <center><h2 style="font-family: 'Times New Roman';">Post</h2></center>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <hr>
+                                </div>
+                            </div>
+                            <form action="{% url 'post_image' %}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col">
+                                        <center>Select an image</center>
+                                        <center><input type="file" name="posted_image" id="posted_image"></center>
+                                    </div>
+                                    <br>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col">
+                                        <!-- <center>Type a caption</center> -->
+                                        <div class="form-group">
+                                        <center><textarea class="form-control" type="text" name="caption" id="caption" placeholder="Caption....."></textarea></center>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <center><button type="submit" class="btn btn-lg" style="background-color:#9b2727;color:white">Post</button></center>
+                                    </div>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

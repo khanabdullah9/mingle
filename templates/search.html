@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<script>
+    document.getElementById('submit').addEventListener('click',function(){
+        search_input = document.getElementById("search");
+        if(search_input=="" || search_input==null){
+            alert("Enter something");
+        }
+    });
+</script>
+<div class="container-fluid">
+    <div class="row" style="margin-top:200px;">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <center>Enter username</center>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <form id="search_form" name="search_form" action="{% url 'search' %}" method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="text" name="search" id="search" class="form-control" placeholder="Enter username">
+                                </div>
+                            
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                        <button type="submit" id="submit" class="btn btn-lg" style="width:100%;background-color:#9b2727;color:white">Search</button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

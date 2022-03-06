@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% block title %}Chat Room{% endblock %}
+{% block head %}
+<style>
+    #chat-text{ 
+        content: "\a";
+        white-space: pre;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row" style="margin-top:10px;">
+        <div class="col-md-3 mr-auto">
+            <div class="">
+                <div class="">
+                    <p class="my-font">You can now connect with</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <!-- <input type="text" name="" id="" placeholder="username">
+                                    <button type="submit" name="" id="" class="btn btn-success">Search</button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col">
+                            <hr>
+                        </div>
+                    </div> -->
+                    {% if friends %}
+                    {% for uf in friends %}
+                    <div class="row">
+                        <div class="col">
+                            <a href="{% url 'load_room' uf.email %}" class="btn btn-default">{{uf.username}}</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    You have no one to mingle with
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row" id="msgrow" style="margin-bottom:80px;">
+
+                <div class="col-md-12 mx-auto">
+                    <!-- <div class="card">
+                        <div class="card-body" style="height: 700px;"> -->
+                            <div style="height:500px;overflow:hidden;overflow-y:scroll;margin-top:10px;margin-bottom:100px;">
+                                <div class="col-md-10 mx-auto">
+                                    <!-- <div class="overflow-auto"> -->
+                            {% if room_messages %}
+                            {% for m in room_messages %}
+                            {% if m.message_sender.username == request.user.username %}
+                            
+                            {% if all_images %}
+                            {% for ai in all_images %}
+                            {% with "pp_"|add:m.message_sender.username as custom_image_id %}
+                            {% if ai.image_id == custom_image_id %}
+                            <b><p style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large" ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.message_time}})</p> </b>
+                             {% endif %}<!--66-->
+                            {% endwith %}<!--65-->
+                            {% endfor %}<!--64-->
+                            {% endif %}<!--63-->
+                            {% else %}<!--61-->
+                            
+                            {% if all_images %}
+                            {% for ai in all_images %}
+                            {% with "pp_"|add:m.message_sender.username as custom_image_id_2 %}
+                            {% if ai.image_id == custom_image_id_2 %}
+                             <b><p style="border:none;outline:none;text-align:left;color:black;font-family:'Courier New', Courier, monospace;font-size:large"   ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> <b>{{m.message}}</b>  ({{m.message_time}})</p>
+                            {% endif %}<!--77-->
+                            {% endwith %}<!--76-->
+                            {% endfor %}<!--75-->
+                            {% endif %}<!--74-->
+                            <!----------->
+                            {% endif %}<!--61-->
+                            {% endfor %}<!--60-->
+                            {% endif %}<!--59-->
+                            <!----------->
+                            {% if room_messages %}
+                            {% for m2 in room_messages %}
+                            {% if all_images %}
+                            {% for ai in all_images %}
+                            {% with "pp_"|add:m2.message_sender.username as custom_image_id_3 %}
+                            {% if ai.image_id == custom_image_id_3 %}
+                            <!-- <b><p style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large" id="chat-text-box" ></p></b> -->
+                            {% endif %}<!--85-->
+                            {% endwith %}<!--86-->
+                            {% endfor %}<!--87-->
+                            {% endif %}<!--88-->
+                            <!---->
+                            {% endfor %}<!--90-->
+                            {% endif %}<!--89-->
+                           <br>
+                        </div>
+                            </div>
+        </div>
+            </div>
+            <div class="row" style="position:fixed;bottom:0px;">
+                <div class="col" >
+                    <div class="form-group">
+                        <div  class="input-group">
+                            <input type="hidden" name="room_name" id="room_name">
+                            <input type="text" autocomplete="off" name="input" id="input" placeholder="What's on your mind?" style="width: 1030px;">
+                            {% if room_name %}
+                            <a href="{% url 'load_with_room_name' room_name  %}" id="submit" class="btn" style="background-color:#9b2727;color:white">SEND</a>
+                            {% endif %}
+                        </div>
+                        </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function encrypt(txt,key){
+        cipher_txt="";
+        for(let i=0;i<txt.length;i++){
+        var ascii_ = txt.charCodeAt(i);
+        ascii_ += key;
+        cipher_txt += String.fromCharCode(ascii_);
+    }
+    console.log(cipher_txt);
+    }
+    function decrypt(cipher_txt,key){
+        plain_txt="";
+        for(let i=0;i<cipher_txt.length;i++){
+            var ascii_ = txt.charCodeAt(i);
+            ascii_ -= key;
+            plain_txt += String.fromCharCode(ascii_);
+        }
+        console.log(plain_txt);
+    }
+</script>
+{{room_name|json_script:"room-name"}}
+{{username|json_script:"user_username"}}
+<script>
+    const roomName = JSON.parse(document.getElementById('room-name').textContent);
+    const username = JSON.parse(document.getElementById('user_username').textContent);
+
+    var input_box = document.getElementById("input");
+    if(input_box.innerHTML==""){
+        document.getElementById("submit").style.visibility=false;
+    }
+    else{
+        document.getElementById("submit").style.visibility=true;
+    }
+
+    //for sending the message to websocket
+    document.getElementById("submit").onclick=function(e){
+        const messageInputDom = document.querySelector("#input");
+        const message = messageInputDom.value;
+        console.log("message: "+message);
+        if(messageInputDom.value!=""){
+            chatSocket.send(JSON.stringify({
+                'message':message,
+                'username':username,
+                'room_name':roomName,
+            }));
+        }
+        messageInputDom.value='';
+    }
+    //setting up the websocket
+    const chatSocket = new WebSocket(
+        'ws://'+
+        window.location.host+
+        '/ws/chat/'+
+        roomName+
+        '/'
+    );
+
+    //getting messages from the websocket
+    chatSocket.onmessage = function(e){
+        const data = JSON.parse(e.data);
+        console.log("data: message->"+data.message+"\nusername->"+data.username);
+        //document.querySelector("#chat-text").value += (data.message + '\n')
+        //document.getElementById('chat-text-box').innerHTML += ('\n'+data.username+": "+data.message+' (just now)');
+        //document.getElementById('chat-text-box').innerHTML += '\n'+data.username+": "+data.message+' (just now)<br>';
+        //document.getElementById('chat-text-box').innerText += ('\n'+data.username+": "+data.message+' (just now)');
+        $("#chat-text-box").val('\n'+data.username+": "+data.message+' (just now)');
+        //document.querySelector('#chat-text').value += ('\n'+data.username+": "+data.message+' (just now)'+'\n')
+
+    }
+</script>
+<script>
+    var submit_btn = document.getElementById('submit')
+    submit_btn.onclick(function(){
+
+    })
+</script>
+<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+{% endblock %}

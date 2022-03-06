@@ -1,0 +1,192 @@
+{% extends 'base2.html' %}
+{% block title %}{% endblock %}
+<script>
+    function input_validation(){
+        comment = document.querySelector('#comment_text').value;
+        if (comment == "") {
+            alert("Maybe you forgot to type something");
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+</script>
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="row" style="margin-top: 75px;">
+                <div class="col-md-6 mx-auto">
+                    <div class="card">
+                        <div class="">
+                            <div class="">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <!-- profile image -->
+                                        {% if image %}
+                                        {% for img in image %}
+                                        <img src="{{img.image.url}}" alt="Error" height="260px" width="240px">
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                {% if user %}
+                                                {% for u in user %}
+                                                <p>{{u.username}}</p>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-4">
+                                                {% if image %}
+                                                {% for img in image %}
+                                                <form action="{% url  'like' img.image_id %}" method="post">
+                                                    {% csrf_token %}
+                                                <button type="submit" class="btn" style="background-color:#9b2727;color:white;">{{img.image_liked_count}} like/s</button>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-4"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <p>{{img.image_caption}}</p>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    {% if image %}
+                                    {% for img in image %}
+                                    <div class="col-md-10">
+                                        <form action="{% url 'comment' img.image_id %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <textarea id="comment_text" name="comment_text" class="form-control" placeholder="Say something nice....."></textarea>
+                                            </div>
+                                    </div>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn " style="background-color:#9b2727;color:white;" onclick="input_validation()">Comment</button>
+                                    </form>
+                                    </div>
+                                </div>
+                                <br>
+                                {% if comment %}
+                                {% for c in comment %}
+                                <div class="row" >
+                                    <div class="col-md-12 mx-auto">
+                                        <div class="row" style="padding:20px;">
+                                            <div class="col-md-2">
+                                                {% with "pp_"|add:c.commenter.username as custom_image_id %}
+                                                {% if all_images %}
+                                                {% for ai in all_images %}
+                                                {% if ai.image_id == custom_image_id %}
+                                                <img src="{{ai.image.url}}" alt="Error" width="40" height="50" style="border-radius:50%"> 
+                                                {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% endwith %}
+                                            </div>
+                                            <div class="col-md-4">                
+                                                <p style="margin-left:-80px;"><b>{{c.commenter_username}}</b></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{c.comment_time}}
+                                            </div>
+                                        </div>
+                                        <div class="row" style="padding:20px;">
+                                            <div class="col">
+                                                {{c.comment}}
+                                            </div>
+                                        </div>
+                                        {% if reply %}
+                                        {% for r_ in reply %}
+                                        {% if c.comment|lower == r_.comment|lower %}
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        {% with "pp_"|add:r_.replier.username as custom_image_id %}
+                                                {% if all_images %}
+                                                {% for ai in all_images %}
+                                                {% if ai.image_id == custom_image_id %}
+                                                <img src="{{ai.image.url}}" alt="Error" width="40" height="50" style="border-radius:50%"> 
+                                                {% endif %}
+                                                {% endfor %}
+                                                {% endif %}
+                                                {% endwith %}
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <b>{{r_.replier_username}}</b>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        {{r_.reply_time}}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        {{r_.reply}}         
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    {% if image %}
+                                                    {% for i in image %}
+                                                  
+                                <form action="{% url 'reply' c.comment_id i.image_id %}" method="post">
+                                    {% csrf_token %}
+                                                {% endfor %}
+                                                    {% endif %}
+                                                <input type="text" name="reply_text" id="reply_text" class="form-control">
+                                            </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="submit" class="btn" style="background-color:#9b2727;color:white;">Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                                <div class="row">
+                                    <div class="col">
+                                        <hr>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

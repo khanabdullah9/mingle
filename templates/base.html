@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="StyleSheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
+    <title>{% block title %}Home{% endblock %}</title>
+
+    <!-- Custom javascript -->
+    <!-- <script src="{% static 'js/script.js' %}"></script> -->
+    <script>
+      setTimeout(function(){
+        $('#message').fadeOut('slow')
+    },4000);
+    </script>
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body>
+      <!-- navbar starts -->
+    <nav class="navbar navbar-expand-lg navbar-light ">
+        <div class="container-fluid">
+          <a class="my-font navbar-brand " href="{% url 'home' %}" style="color:#9b2727;font-size:xx-large;font-family: 'Times New Roman';">mingle</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                {%if  user.is_authenticated %}
+                <a class="nav-link" aria-current="page" href="{% url 'inbox' %}">Inbox</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'search' %}">Search</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                {% endif %}
+              </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'signup' %}">Sign up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'chat' %}">Chat</a>
+          </li>
+            {% else %} 
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'signup' %}">Sign up</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="{% url 'login' %}">Login</a>
+        </li>
+       
+
+            {% endif %}
+          </ul> 
+                
+          </div>
+        </div>
+      </nav>
+      <!-- flash messages -->
+      {% include 'alerts.html' %}
+      <!-- flash message ends -->
+      <!-- navbar ends -->
+      {% block content %}
+        {% endblock %} 
+        <!-- footer starts -->
+    <!-- <footer class="fixed-bottom">
+        <center><a class="nav-link" href="#">Report</a></center>
+    </footer> -->
+    <!-- footer ends -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <!-- <script>
+      src="{%static 'js/jquery.js'%}"
+    </script> -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  </body>
+</html>

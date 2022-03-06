@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section-conten padding-y" style="min-height:84vh">
+
+    <!-- ============================ COMPONENT LOGIN   ================================= -->
+
+    {% if request.GET.command == 'verification' %}
+    <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024; margin-top:100px;">
+        We have sent you a verification email [{{request.GET.email}}] , verify your account first
+        <br><br>
+        Already verified? <a href="{% url 'login' %}">Login</a>
+    </div>
+    {% else %}
+
+    <div class="card mx-auto" style="max-width: 500px; margin-top:100px;">
+        <div class="card-body">
+            <h4 class="card-title mb-4">Log in</h4>
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email Address" name="email">
+                </div> <!-- form-group// -->
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Password" name="password" style="margin-top:0.5em;">
+                </div> <!-- form-group// -->
+
+                <div class="form-group">
+                    <a href="{% url 'forgot_password' %}" class="float-right" style="margin-top:0.5em;">Forgot password?</a>
+
+                </div> <!-- form-group form-check .// -->
+                <div class="form-group">
+                   <center> <button type="submit" class="btn btn-block" style="margin-top:1em;width: 100%;background-color:#9b2727;color:white" onclick="test();"> Login </button></center>
+                </div> <!-- form-group// -->
+            </form>
+        </div> <!-- card-body.// -->
+    </div> <!-- card .// -->
+
+    <p class="text-center mt-4">Don't have account? <a href="{% url 'signup' %}">Sign up</a></p>
+    <br><br>
+    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+    {% endif %}
+
+
+</section>
+{% endblock %}

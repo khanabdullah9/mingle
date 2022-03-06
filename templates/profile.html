@@ -1,0 +1,132 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-md-8 mx-auto">
+            <div class="row">
+                <div class="col-md-4">
+                    {% if profile_picture %}
+                    {% for img in profile_picture %}
+                    <img src="{{img.image.url}}" width="260px" height="280px" alt="Error loading img"><!--image is the model field-->
+                    {% endfor %}
+                    {% else %}
+                    <img src="blank_pp.jpg" width="260px" height="280px">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col">
+                            {% if user %}
+                            {% for usr in user %}
+                            <h5>{{usr.username}}</h5>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col" style="justify-content: left;">
+                            {% if is_current_user %}
+                            <a href="{% url 'update_profile' %}" class="btn btn-maroon" style="width:100px;">Update</a>
+                            {% else %}
+                            {% endif %}
+                        </div>
+                    </div>    
+                    {% if profile %}
+                    {% for pro in profile %}           
+                    <div class="row">
+                        <div class="col-md-3">
+                            Posts
+                            <br>
+                            {{pro.post_count}}
+                        </div>
+                        <div class="col-md-3">
+                            Followers
+                            <br>
+                            {% if user %}
+                            {% for u in user %}    
+                            <a href="{% url 'view_followers' u.email %}" class="btn">{{pro.user_follower_count}}</a>     
+                        </div>
+                        <div class="col-md-3">
+                            Following
+                            <br>
+                           <a href="{% url 'view_following' u.email %}" class="btn"> {{pro.user_following_count}}</a>
+                           {% endfor %}
+                           {% endif %}
+                        </div>       
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>{{pro.bio}}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    <br>
+                    <div class="row">
+                        <div class="col" style="justify-content:left">
+                            {% if user %}
+                            {% for u in user %}           
+                            <form action="{% url 'send_request' u %}" method="post">
+                                {% csrf_token %}
+                                {% if not is_current_user %}
+                                {% if not is_following %}
+                            <button type="submit" class="btn  btn-lg" style="width:230px;background-color:#9b2727;color:white" >Follow</button>
+                            {% endif %}
+                            {% endif %}
+                        </form>
+                        {% endfor %}
+                            {% endif %}
+                        </div>   
+                        <div class="col" style="justify-content:left">
+                            {% if not is_current_user %}
+                            {% if is_following %}
+                            {% if user %}
+                            {% for u in user %}
+                            <a href="{% url 'unfollow' u %}" class="btn btn-maroon btn-lg" style="width:230px;margin-left:-250px;">Unfollow</a>
+                            {% endfor %}
+                            {% endif %}
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                        <div class="col" style="justify-content:left">
+                            {% if is_current_user %}
+                            <a href="{% url 'post_image' %}" class="btn btn-maroon btn-lg" style="width:200px;margin-left:-450px;">Post</a>
+                            {% else %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <hr>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <!-- Gallery section -->         
+                    <div class="row">
+                        {% if images %}
+                    {% for img in images %} 
+                        <div class="col-md-3">
+                            <!-- <div class="card card-product-grid"> -->
+                                <a href="{% url 'view_image' img.image_id   %}" class="img-wrap"><img src="{{ img.image.url }}" width="220px" height="240px" alt="Error loading image" ></a>
+                                <figcaption class="info-wrap" style="margin-top:4px;">
+                                    {% if is_current_user %}
+                                    <a href="{% url 'delete_image' img.image_id %}" class="btn btn-maroon" style="width:75%">Delete</a>
+                                    {% else %}
+                                    {% endif %}
+                                </figcaption>
+                                <br>
+                            <!-- </div> -->
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div> 
+                      
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
