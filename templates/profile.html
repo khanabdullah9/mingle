@@ -9,10 +9,10 @@
                 <div class="col-md-4">
                     {% if profile_picture %}
                     {% for img in profile_picture %}
-                    <img src="{{img.image.url}}" width="260px" height="280px" alt="Error loading img"><!--image is the model field-->
+                    <img src="{{img.image.url}}" width="260px" height="290px" alt="Error loading img"><!--image is the model field-->
                     {% endfor %}
                     {% else %}
-                    <img src="blank_pp.jpg" width="260px" height="280px">
+                    <img src="{% static 'images/blank_pp.jpg' %}" width="260px" height="280px">
                     {% endif %}
                 </div>
                 <div class="col-md-8">
@@ -91,8 +91,14 @@
                         <div class="col" style="justify-content:left">
                             {% if is_current_user %}
                             <a href="{% url 'post_image' %}" class="btn btn-maroon btn-lg" style="width:200px;margin-left:-450px;">Post</a>
+                            <a href="{% url 'delete_profile' %}" class="btn btn-maroon btn-lg" style="width:200px;" onclick="confirm_delete();">Delete Profile</a>
                             {% else %}
                             {% endif %}
+                            <script>
+                                function confirm_delete(){
+                                    return confirm("Are you sure you want to delete this profile?");
+                                }
+                            </script>
                         </div>
                     </div>
                 </div>

@@ -5,7 +5,7 @@
     <!-- ============================ COMPONENT LOGIN   ================================= -->
 
     {% if request.GET.command == 'verification' %}
-    <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 1024; margin-top:100px;">
+    <div class="container mx-auto alert  text-center" role="alert" style="max-width: 1024; margin-top:100px;background-color:#ddcfcf">
         We have sent you a verification email [{{request.GET.email}}] , verify your account first
         <br><br>
         Already verified? <a href="{% url 'login' %}">Login</a>

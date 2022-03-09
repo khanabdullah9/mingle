@@ -16,4 +16,5 @@ urlpatterns = [
     path('accept/<str:follower>',views.accept,name='accept'),
     path('reject/<str:follower>',views.reject,name='reject'),
     path('inbox/',views.inbox,name='inbox'),
+    path('delete_profile',views.delete_profile,name='delete_profile'),
 ]

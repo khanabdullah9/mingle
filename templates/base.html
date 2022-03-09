@@ -45,14 +45,15 @@
             <ul class="navbar-nav mr-auto">
             {% if user.is_authenticated %}
             <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="{% url 'chat' %}">Chat</a>
+              </li>
+            <li class="nav-item">
               <a class="nav-link" aria-current="page" href="{% url 'signup' %}">Sign up</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="{% url 'logout' %}">Logout</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="{% url 'chat' %}">Chat</a>
-          </li>
+        
             {% else %} 
             <li class="nav-item">
               <a class="nav-link" aria-current="page" href="{% url 'signup' %}">Sign up</a>

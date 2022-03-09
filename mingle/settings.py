@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'UserProfile',
     'comment',
     'chat',
+    'exception_handling',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,4 @@
+try:
+        
+except Exception as e:
+	log_exception(request,e,view_name="")

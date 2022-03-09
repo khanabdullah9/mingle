@@ -1,0 +1,15 @@
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row" style="margin-top:50px;margin-left:610px;">
+        <div class="col">
+            <img src="{% static 'images/error2.jpg' %}" alt="Could not load the image">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <p style="text-align:center;font-size:40px;">An unknown error has occured. The IT team will look into the problem shortly. Sorry for the inconvenience caused!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
