@@ -43,13 +43,13 @@
                             Followers
                             <br>
                             {% if user %}
-                            {% for u in user %}    
+                            {% for u in user %}  
                             <a href="{% url 'view_followers' u.email %}" class="btn">{{pro.user_follower_count}}</a>     
                         </div>
                         <div class="col-md-3">
                             Following
                             <br>
-                           <a href="{% url 'view_following' u.email %}" class="btn"> {{pro.user_following_count}}</a>
+                           <a href="{% url 'view_following' u.email %}" class="btn"> {{pro.user_following_count}}</a> 
                            {% endfor %}
                            {% endif %}
                         </div>       
@@ -91,12 +91,18 @@
                         <div class="col" style="justify-content:left">
                             {% if is_current_user %}
                             <a href="{% url 'post_image' %}" class="btn btn-maroon btn-lg" style="width:200px;margin-left:-450px;">Post</a>
-                            <a href="{% url 'delete_profile' %}" class="btn btn-maroon btn-lg" style="width:200px;" onclick="confirm_delete();">Delete Profile</a>
+                            <a href="{% url 'delete_profile' %}" class="btn btn-maroon btn-lg" style="width:200px;" onclick="return confirm('Are you sure you want to delete your profile?');">Delete Profile</a>
                             {% else %}
                             {% endif %}
                             <script>
                                 function confirm_delete(){
-                                    return confirm("Are you sure you want to delete this profile?");
+                                    var result = confirm("Are you sure you want to delete this profile?");
+                                    if(result){
+                                        return true;
+                                    }
+                                    else{
+                                        return false;
+                                    }
                                 }
                             </script>
                         </div>

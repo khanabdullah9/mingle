@@ -14,7 +14,6 @@ from chat.models import ChatRoom,Message
 import traceback
 from exception_handling.views import log_exception
 from exception_handling.models import ExceptionLog
-# from accounts.views import logout
 
 # Create your views here.
 def create_profile(request,user):
@@ -26,7 +25,7 @@ def create_profile(request,user):
         profile.save()
     except Exception as e:
         log_exception(request,e,view_name="create_profile")  
-    # print("[SUCCESS] profile object has been created")
+        return render(request,"error.html")
 
 """View own profile"""
 # @login_required(login_url='login')
@@ -56,11 +55,10 @@ def profile(request):
             'images':None,
             'profile_picture':None,
             }
-
         return render(request,"profile.html",context)
     except Exception as e:
         log_exception(request,e,view_name="profile")
-    
+        return render(request,"error.html")
 
 """View other profile"""
 """
@@ -96,6 +94,8 @@ def view_profile(request,user_email):
         return render(request,"profile.html",context)
     except Exception as e:
         log_exception(request,e,view_name="view_profile")
+        return render(request,"error.html")
+
     
 """Update own profile"""
 def update_profile(request):
@@ -153,10 +153,9 @@ def update_profile(request):
                     messages.error(request,"You can only upload jpg image")
             except Exception as e:
                 messages.error(request,"Profile picture is must!")
-                log_exception(request,e)
     except Exception as e:
         log_exception(request,Exception=e,view_name="update_profile")
-        return redirect(request,"error.html")       
+        return render(request,"error.html")
     return render(request,"update.html",context)
 
 """Post in image to gallery"""
@@ -187,6 +186,7 @@ def post_image(request):
         return render(request,"post_image.html")
     except Exception as e:
         log_exception(request,e,view_name="post_image")
+        return render(request,"error.html")
     
 """Delete image from gallery"""
 """
@@ -209,6 +209,7 @@ def delete_image(request,image_id):
         return redirect('profile')
     except Exception as e:
         log_exception(request,e,view_name="delete_image")
+        return render(request,"error.html")
 
 """Search user profile functionality"""
 def search(request):
@@ -237,6 +238,7 @@ def search(request):
         return render(request,"search.html",context)
     except Exception as e:
         log_exception(request,e,view_name="search")
+        return render(request,"error.html")
 
 """Follow other users"""
 """
@@ -267,8 +269,7 @@ def follow(request,follower):
         return redirect('inbox')    
     except Exception as e:
         log_exception(request,e,view_name="follow")
-    
-    
+        return render(request,"error.html")
 
 """Unfollow a user"""
 """
@@ -294,8 +295,9 @@ def unfollow(request,profile):
         profile_owner_obj.save()
         #deleting the chat room
         room_name = get_or_create_room_name(request,current_user.username,profile_owner.username)
-        chat_room = ChatRoom.objects.get(room_name=room_name)
-        chat_room.delete()
+        # if ChatRoom.objects.filter(room_name=room_name).exists():
+        #     chat_room = ChatRoom.objects.get(room_name=room_name)
+        #     chat_room.delete()
         #deleting the chatroom messages
         if Message.objects.filter(room_name=room_name).exists():
             msgs = Message.objects.get(room_name=room_name)
@@ -303,6 +305,7 @@ def unfollow(request,profile):
         return redirect('view_profile',str(request.user))            
     except Exception as e:
         log_exception(request,e,view_name="unfollow")
+        return render(request,"error.html")
 
 """View the profile user's follower"""
 """
@@ -326,6 +329,7 @@ def view_followers(request,user_email):
         return render(request,"viewfollowers.html",context) 
     except Exception as e:
         log_exception(request,e,view_name="view_followers")
+        return render(request,"error.html")
 
 """View who the user is following"""
 """
@@ -348,6 +352,7 @@ def view_following(request,user_email):
         return render(request,"viewfollowing.html",context)
     except Exception as e:
         log_exception(request,e,view_name="view_following")
+        return render(request,"error.html")
 
 """Send a follow request"""
 """
@@ -358,28 +363,31 @@ def send_request(request,user):
         id = ''.join(random.choices(string.ascii_uppercase+string.digits,k=10))
         current_user = Account.objects.get(email=str(request.user))
         user_to_be_followed = Account.objects.get(email=user)
-        #if the requestee object already exists. Just add the requester to the ManyToMany Field
-        if FollowRequest.objects.filter(requestee=user_to_be_followed).exists():
-            query = FollowRequest.objects.get(requestee=user_to_be_followed)
-            current_requests = query.requester.all()
-            if current_user not in current_requests:
-                fr = FollowRequest.objects.get(requestee=user_to_be_followed)
-                fr.requester.add(current_user)
-                fr.save()
-                messages.success(request,"Your follow request has been sent!")
-            else:
-                messages.warning(request,"Your request is already in the queue!")
-        else:#Create a new requestee object.
-            if FollowRequest.objects.filter(requestee=user_to_be_followed,requester=current_user).exists()==False:
-                follow_request = FollowRequest(fr_id=id,requestee=user_to_be_followed)
-                follow_request.save()
-                follow_request.requester.add(current_user)
-                messages.success(request,"Your follow request has been sent!")
-            else:
-                messages.warning(request,"Your request is already in the queue!")
+        if current_user != user_to_be_followed:#cannot follow yourself
+            #if the requestee object already exists. Just add the requester to the ManyToMany Field
+            if FollowRequest.objects.filter(requestee=user_to_be_followed).exists():
+                query = FollowRequest.objects.get(requestee=user_to_be_followed)
+                current_requests = query.requester.all()
+                if current_user not in current_requests:
+                    fr = FollowRequest.objects.get(requestee=user_to_be_followed)
+                    fr.requester.add(current_user)
+                    fr.save()
+                    messages.success(request,"Your follow request has been sent!")
+                else:
+                    messages.warning(request,"Your request is already in the queue!")
+            else:#Create a new requestee object.
+                if FollowRequest.objects.filter(requestee=user_to_be_followed,requester=current_user).exists()==False:
+                    follow_request = FollowRequest(fr_id=id,requestee=user_to_be_followed)
+                    follow_request.save()
+                    follow_request.requester.add(current_user)
+                    messages.success(request,"Your follow request has been sent!")
+                else:
+                    messages.warning(request,"Your request is already in the queue!")
         return redirect('view_profile',user)
     except Exception as e:
         log_exception(request,e,view_name="send_request")
+        return render(request,"error.html")
+
     
 """Accept user requests"""
 """
@@ -396,6 +404,8 @@ def accept(request,follower):
         return redirect('follow',follower)
     except Exception as e:
         log_exception(request,e,view_name="accept")
+        return render(request,"error.html")
+
 
 """Decline the request"""
 """
@@ -410,6 +420,8 @@ def reject(request,follower):
         return redirect('inbox')
     except Exception as e:
         log_exception(request,e,view_name="reject")
+        return render(request,"error.html")
+
     
 """Redirect to the inbox page"""
 def inbox(request):
@@ -429,28 +441,55 @@ def inbox(request):
         return render(request,"inbox.html",context)
     except Exception as e:
         log_exception(request,e,view_name="inbox")
+        return render(request,"error.html")
+
 
 """Delete your own profile"""
 def delete_profile(request):
     try:
-        current_user = Account.objects.get(email=str(request.user))
-        current_user_profile = Profile.objects.get(user=current_user)
+        if Account.objects.filter(email=str(request.user)).exists():
+            current_user = Account.objects.get(email=str(request.user))
+            
+        """Delete Profile object"""
+        if Profile.objects.filter(user=current_user).exists():
+            current_user_profile = Profile.objects.get(user=current_user)
+            """TO CHANGE THE FOLLOWER'S FOLLOWING COUNT"""
+
+            for a in current_user_profile.user_has_follower.all():
+                follower_profile = Profile.objects.get(user=a)
+                # follower_following_count = follower_profile.user_following_count#Following count of the user who follow this user
+                follower_profile.user_following_count -= 1 # decrementing the following count
+                follower_profile.save()
+
+            """TO CHANGE THE FOLLOWER COUNT OF THE USER THIS USER IS FOLLOWING"""
+            
+            for b in current_user_profile.user_is_following.all():
+                following_profile = Profile.objects.get(user=b)#user who this user is following.
+                following_profile.user_follower_count -= 1 # decrementing the follower count for each user this user is following.
+                following_profile.save()
+
+            current_user_profile.delete()
+            
+        """Deleting the chat messages"""
+        if Message.objects.filter(message_sender=current_user).exists():
+            chat_messages = Message.objects.filter(message_sender=current_user)
+            chat_messages.delete()
+        """Delete Images"""
+        if Image.objects.filter(user=current_user).exists():
+            images = Image.objects.filter(user=current_user)
+            images.delete()
+        """Deleting FollowRequest"""
+        if FollowRequest.objects.filter(requestee=current_user,requester=current_user).exists():
+            follow_requests = FollowRequest.objects.filter(requestee=current_user,requester=current_user)
+            follow_requests.delete()
+        """Deleting Comments"""
+        if Comment.objects.filter(commenter=current_user).exists():
+            comments = Comment.objects.filter(commenter=current_user)
+            comments.delete()
+
         """Deleting account object"""
         current_user.delete()
-        """Delete Profile object"""
-        current_user_profile.delete()
-        """Deleting the chat messages"""
-        chat_messages = Message.objects.filter(message_sender=current_user)
-        chat_messages.delete()
-        """Delete Images"""
-        images = Image.objects.filter(user=current_user)
-        images.delete()
-        """Deleting FollowRequest"""
-        follow_requests = FollowRequest.objects.filter(requestee=current_user,requester=current_user)
-        follow_requests.delete()
-        """Deleting Comments"""
-        comments = Comment.objects.filter(commenter=current_user)
-        comments.delete()
         return redirect('/')
     except Exception as e:
         log_exception(request,e,view_name="delete_profile")
+        return render(request,"error.html")

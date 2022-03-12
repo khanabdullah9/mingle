@@ -64,6 +64,8 @@ def signup(request):
         return render(request,'signup.html',context)
     except Exception as e:
         log_exception(request,e,view_name='signup')
+        return render(request,"error.html")
+
 
 """User Login"""
 def login(request):
@@ -83,6 +85,8 @@ def login(request):
         return render(request,'login.html')
     except Exception as e:
         log_exception(request,e,view_name="login")
+        return render(request,"error.html")
+
 
 @login_required(login_url='login')
 def logout(request):
@@ -92,6 +96,8 @@ def logout(request):
         return redirect('login')
     except Exception as e:
         log_exception(request,e,view_name="logout")
+        return render(request,"error.html")
+
 
 """
 To activate user account 
@@ -116,11 +122,12 @@ def activate(request,uidb64,token):
             return redirect('signup')
     except Exception as e:
         log_exception(request,e,view_name="activate")
+        return render(request,"error.html")
+
 
 """
 RESET PASSWORD FUNCTIONALITY
 """
-
 def forgot_password(request):
     try:
         if request.method=="POST":
@@ -149,6 +156,8 @@ def forgot_password(request):
         return render(request,"forgot_password.html")
     except Exception as e:
         log_exception(request,e,view_name="forgot_password")
+        return render(request,"error.html")
+
 
 """
 Checking if the user exists
@@ -170,11 +179,11 @@ def reset_password_validate(request,uidb64,token):
             return redirect('login')
     except Exception as e:
         log_exception(request,e,view_name="reset_password_validate")
+        return render(request,"error.html")
 
 """
 Updating the password in the model
 """
-
 def reset_password(request):
     try:
         if request.method=="POST":
@@ -195,4 +204,6 @@ def reset_password(request):
             return render(request,"reset_password.html")
     except Exception as e:
         log_exception(request,e,view_name="reset_password")
+        return render(request,"error.html")
+
 

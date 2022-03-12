@@ -38,6 +38,8 @@ def view_image(request,image_id):
         return render(request,"view_image.html",context)
     except Exception as e:
         log_exception(request,e,view_name="view_image")
+        return render(request,"error.html")
+
 
 """Post a comment to that image"""
 """
@@ -58,6 +60,8 @@ def comment(request,image_id):
         return redirect('view_image',image_id=image_id)
     except Exception as e:
         log_exception(request,e,view_name="comment")
+        return render(request,"error.html")
+
 
 """Reply to a comment"""
 """
@@ -78,6 +82,8 @@ def reply(request,comment_id,image_id):
         return redirect('view_image',image_id=image_id)   
     except Exception as e:
         log_exception(request,e,view_name="reply")
+        return render(request,"error.html")
+
     
 
 """Increment the image_liked_count by 1 and saving the liker object"""
@@ -94,5 +100,7 @@ def like(request,image_id):
         return redirect('view_image',image_id=image_id)
     except Exception as e:
         log_exception(request,e,view_name="like")
+        return render(request,"error.html")
+
 
 

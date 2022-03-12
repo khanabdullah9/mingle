@@ -2,3 +2,4 @@ try:
         
 except Exception as e:
 	log_exception(request,e,view_name="")
+    return render(request,"error.html")

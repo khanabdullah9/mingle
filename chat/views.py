@@ -35,6 +35,8 @@ def chat(request):
         return render(request,"chat.html",context)
     except Exception as e:
         log_exception(request,e,view_name="chat")
+        return render(request,"error.html")
+
 
 """Chat room"""
 """
@@ -71,6 +73,8 @@ def room(request,room_name):
         return render(request,"chat.html",context)
     except Exception as e:
         log_exception(request,e,view_name="room")
+        return render(request,"error.html")
+
     
 """Creating a chat room after a user follows another user """
 """
@@ -87,6 +91,8 @@ def create_chat_room(request,user1,user2):
         print(f"[SUCCESS] ChatRoom: {room_name} has been created!")
     except Exception as e:
         log_exception(request,e,view_name="create_chat_room")
+        return render(request,"error.html")
+
     
 
 """Generating room name"""
@@ -112,6 +118,8 @@ def get_or_create_room_name(request,user1,user2):
         return filter(room_name)
     except Exception as e:
         log_exception(request,e,view_name="get_or_create_room_name")
+        return render(request,"error.html")
+
     
 
 """Get the chat room using the room name"""
@@ -126,6 +134,8 @@ def load_room(request,partner):
         return redirect('room',room_name)
     except Exception as e:
         log_exception(request,e,view_name="load_room")
+        return render(request,"error.html")
+
 
 """Load room with room name"""
 """
@@ -137,6 +147,8 @@ def load_with_room_name(request,room_name):
         return redirect('room',room_name)
     except Exception as e:
         log_exception(request,e,view_name="load_with_room_name")
+        return render(request,"error.html")
+
     
 """Eliminate all the punctuations"""
 """

@@ -49,7 +49,6 @@
         </div>
         <div class="col-md-9">
             <div class="row" id="msgrow" style="margin-bottom:80px;">
-
                 <div class="col-md-12 mx-auto">
                     <!-- <div class="card">
                         <div class="card-body" style="height: 700px;"> -->
@@ -59,7 +58,7 @@
                             {% if room_messages %}
                             {% for m in room_messages %}
                             {% if m.message_sender.username == request.user.username %}
-                            
+
                             {% if all_images %}
                             {% for ai in all_images %}
                             {% with "pp_"|add:m.message_sender.username as custom_image_id %}
@@ -75,7 +74,7 @@
                             {% for ai in all_images %}
                             {% with "pp_"|add:m.message_sender.username as custom_image_id_2 %}
                             {% if ai.image_id == custom_image_id_2 %}
-                             <b><p style="border:none;outline:none;text-align:left;color:black;font-family:'Courier New', Courier, monospace;font-size:large"   ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> <b>{{m.message}}</b>  ({{m.message_time}})</p>
+                            <b><p style="border:none;outline:none;text-align:left;color:black;font-family:'Courier New', Courier, monospace;font-size:large"   ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> <b>{{m.message}}</b>  ({{m.message_time}})</p>
                             {% endif %}<!--77-->
                             {% endwith %}<!--76-->
                             {% endfor %}<!--75-->
