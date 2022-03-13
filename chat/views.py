@@ -8,6 +8,7 @@ import string
 import random
 import time
 from exception_handling.views import log_exception
+from django.contrib import messages
 
 # Create your views here.
 def chat(request):
@@ -47,6 +48,8 @@ def room(request,room_name):
         all_images = Image.objects.all()
         all_users = Account.objects.all()
         room_obj = ChatRoom.objects.get(room_name=room_name)
+        room_user_1 = room_obj.room_user_1
+        room_user_2 = room_obj.room_user_2
         room_messages = Message.objects.filter(room_name=room_obj)
         current_user = Account.objects.get(email=str(request.user))
         profile = Profile.objects.get(user=current_user)
@@ -64,6 +67,8 @@ def room(request,room_name):
         context={
             'username':current_user.username,
             'room_name':room_name,
+            'room_user_1_username':str(room_user_1.username),
+            'room_user_2_username':str(room_user_2.username),
             'room_messages':room_messages,
             'user_following':user_following,
             'friends':friends,
@@ -85,8 +90,10 @@ def create_chat_room(request,user1,user2):
     try:
         room_id = ''.join(random.choices(string.ascii_uppercase+string.digits,k=10))
         room_name = get_or_create_room_name(request,user1,user2)
+        user1_obj= Account.objects.get(username=user1)
+        user2_obj= Account.objects.get(username=user2)
         if ChatRoom.objects.filter(room_name=room_name).exists() == False:
-            chat_room = ChatRoom(room_id=room_id,room_name=room_name)
+            chat_room = ChatRoom(room_id=room_id,room_name=room_name,room_user_1=user1_obj,room_user_2=user2_obj)
             chat_room.save()
         print(f"[SUCCESS] ChatRoom: {room_name} has been created!")
     except Exception as e:
@@ -130,12 +137,15 @@ def load_room(request,partner):
     try:
         current_user = Account.objects.get(email=str(request.user))
         room_name = get_or_create_room_name(request,current_user.email,partner)
-        print("[PARTNER]:"+partner)
-        return redirect('room',room_name)
+        chat_room = ChatRoom.objects.get(room_name=room_name)
+        if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
+            print(current_user)
+            return redirect('room',room_name)
+        else:
+            return redirect('chat')
     except Exception as e:
         log_exception(request,e,view_name="load_room")
         return render(request,"error.html")
-
 
 """Load room with room name"""
 """
@@ -143,13 +153,17 @@ PARAMS: (string) room_name -> room_name of the ChatRoom
 """
 def load_with_room_name(request,room_name):
     try:
-        print("[Room Name]:",room_name)
-        return redirect('room',room_name)
+        current_user = Account.objects.get(email=str(request.user))
+        chat_room = ChatRoom.objects.get(room_name=room_name)
+        if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
+            print(current_user)
+            return redirect('room',room_name)
+        else:
+            return redirect('chat')
     except Exception as e:
         log_exception(request,e,view_name="load_with_room_name")
         return render(request,"error.html")
 
-    
 """Eliminate all the punctuations"""
 """
 PARAMS: (string) text -> room_name
@@ -161,26 +175,3 @@ def filter(room_name):
         if i not in punctuations:
             op+=i
     return op
-
-
-
-
-#def delete_all_friends(first_name):
-#     user = Account.objects.get(first_name=first_name)
-#     user_profile = Profile.objects.get(user=user)
-#     try:
-#         if user_profile.user_has_follower.all() is not None:
-#             for i in user_profile.user_has_follower.all():
-#                 user_profile.user_has_follower.remove(i)
-#             user_profile.user_follower_count = 0
-#             user_profile.save()
-#         if user_profile.user_is_following.all() is not None:
-#             for i in user_profile.user_is_following.all():
-#                 user_profile.user_is_following.remove(i)
-#             user_profile.user_following_count = 0
-#             user_profile.save()
-#         print("Function exceuted successfully!")
-#     except Exception as e:
-#         print(e)
-    
-            

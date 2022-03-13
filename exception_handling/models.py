@@ -11,5 +11,8 @@ class ExceptionLog(models.Model):
     exception_time = models.DateTimeField(default=datetime.datetime.now)
     view_name = models.CharField(max_length=250,default="Empty")
 
+    # def __str__(self):
+    #     return self.exception_message
+
     def __str__(self):
-        return self.exception_message
+        return str(self.exception_time)

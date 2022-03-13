@@ -5,6 +5,8 @@ from accounts.models import Account
 class ChatRoom(models.Model):
     room_id = models.CharField(max_length=250,primary_key=True,default="Empty")
     room_name = models.CharField(max_length=250,unique=True)
+    room_user_1 = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='room_user_2',default="Empty")
+    room_user_2 = models.ForeignKey(Account,on_delete=models.CASCADE,related_name='room_user_1',default="Empty")
 
     def __str__(self):
         return self.room_name

@@ -124,32 +124,20 @@
         </div>
     </div>
 </div>
-<script>
-    function encrypt(txt,key){
-        cipher_txt="";
-        for(let i=0;i<txt.length;i++){
-        var ascii_ = txt.charCodeAt(i);
-        ascii_ += key;
-        cipher_txt += String.fromCharCode(ascii_);
-    }
-    console.log(cipher_txt);
-    }
-    function decrypt(cipher_txt,key){
-        plain_txt="";
-        for(let i=0;i<cipher_txt.length;i++){
-            var ascii_ = txt.charCodeAt(i);
-            ascii_ -= key;
-            plain_txt += String.fromCharCode(ascii_);
-        }
-        console.log(plain_txt);
-    }
-</script>
 {{room_name|json_script:"room-name"}}
 {{username|json_script:"user_username"}}
+{% if room_user_1_username %}
+{{room_user_1_username|json_script:"room_user_1"}}
+{% endif %}
+{% if room_user_2_username %}
+{{room_user_2_username|json_script:"room_user_2"}}
+{% endif %}
 <script>
     const roomName = JSON.parse(document.getElementById('room-name').textContent);
     const username = JSON.parse(document.getElementById('user_username').textContent);
-
+    const room_user_1 = JSON.parse(document.getElementById('room_user_1').textContent);
+    const room_user_2 = JSON.parse(document.getElementById('room_user_2').textContent);
+    console.log("username:"+username+"\nroom_user_1:"+room_user_1+"\nroom_user_2:"+room_user_2);
     var input_box = document.getElementById("input");
     if(input_box.innerHTML==""){
         document.getElementById("submit").style.visibility=false;
@@ -157,19 +145,25 @@
     else{
         document.getElementById("submit").style.visibility=true;
     }
-
     //for sending the message to websocket
     document.getElementById("submit").onclick=function(e){
         const messageInputDom = document.querySelector("#input");
         const message = messageInputDom.value;
         console.log("message: "+message);
-        if(messageInputDom.value!=""){
-            chatSocket.send(JSON.stringify({
-                'message':message,
-                'username':username,
-                'room_name':roomName,
-            }));
-        }
+        console.log("username:"+username);
+        current_user = "{{request.user.username}}";
+        console.log("current_user: "+current_user);
+        if(username==room_user_1 || username==room_user_2){
+            console.log("username == result");
+            if(messageInputDom.value!=""){
+                chatSocket.send(JSON.stringify({
+                    'message':message,
+                    'username':username,
+                    'room_name':roomName,
+                }));
+            }
+    }
+    else{alert("Unauthorised access to a chat room");console.log("Message could not be sent!");}
         messageInputDom.value='';
     }
     //setting up the websocket
@@ -180,25 +174,12 @@
         roomName+
         '/'
     );
-
     //getting messages from the websocket
     chatSocket.onmessage = function(e){
         const data = JSON.parse(e.data);
         console.log("data: message->"+data.message+"\nusername->"+data.username);
-        //document.querySelector("#chat-text").value += (data.message + '\n')
-        //document.getElementById('chat-text-box').innerHTML += ('\n'+data.username+": "+data.message+' (just now)');
-        //document.getElementById('chat-text-box').innerHTML += '\n'+data.username+": "+data.message+' (just now)<br>';
-        //document.getElementById('chat-text-box').innerText += ('\n'+data.username+": "+data.message+' (just now)');
         $("#chat-text-box").val('\n'+data.username+": "+data.message+' (just now)');
-        //document.querySelector('#chat-text').value += ('\n'+data.username+": "+data.message+' (just now)'+'\n')
-
     }
-</script>
-<script>
-    var submit_btn = document.getElementById('submit')
-    submit_btn.onclick(function(){
-
-    })
 </script>
 <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
 {% endblock %}
