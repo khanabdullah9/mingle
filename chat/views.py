@@ -42,14 +42,20 @@ def chat(request):
 """Chat room"""
 """
 PARAMS: (string) room_name -> model name of the chat room
+(string) current_user -> username of the current logged in user
 """
-def room(request,room_name):
+def room(request,room_name,current_user):
+    # print("[PROMPT] current_user :"+current_user)
     try:
         all_images = Image.objects.all()
         all_users = Account.objects.all()
         room_obj = ChatRoom.objects.get(room_name=room_name)
         room_user_1 = room_obj.room_user_1
         room_user_2 = room_obj.room_user_2
+        # print("[PROMPT] room_user_1.username:"+room_user_1.username)
+        # print("[PROMPT] room_user_2.username:"+room_user_2.username)
+        if room_user_1.username != current_user and room_user_2.username != current_user:
+            return redirect('chat')
         room_messages = Message.objects.filter(room_name=room_obj)
         current_user = Account.objects.get(email=str(request.user))
         profile = Profile.objects.get(user=current_user)
@@ -83,15 +89,15 @@ def room(request,room_name):
     
 """Creating a chat room after a user follows another user """
 """
-PARAMS: (string) user1 -> username 
-(string) user2 -> username 
+PARAMS: (string) user1 -> email of the user 
+(string) user2 -> email of the user 
 """
 def create_chat_room(request,user1,user2):
     try:
         room_id = ''.join(random.choices(string.ascii_uppercase+string.digits,k=10))
         room_name = get_or_create_room_name(request,user1,user2)
-        user1_obj= Account.objects.get(username=user1)
-        user2_obj= Account.objects.get(username=user2)
+        user1_obj= Account.objects.get(email=user1)
+        user2_obj= Account.objects.get(email=user2)
         if ChatRoom.objects.filter(room_name=room_name).exists() == False:
             chat_room = ChatRoom(room_id=room_id,room_name=room_name,room_user_1=user1_obj,room_user_2=user2_obj)
             chat_room.save()
@@ -140,7 +146,7 @@ def load_room(request,partner):
         chat_room = ChatRoom.objects.get(room_name=room_name)
         if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
             print(current_user)
-            return redirect('room',room_name)
+            return redirect('room',room_name,current_user.username)
         else:
             return redirect('chat')
     except Exception as e:
@@ -157,7 +163,7 @@ def load_with_room_name(request,room_name):
         chat_room = ChatRoom.objects.get(room_name=room_name)
         if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
             print(current_user)
-            return redirect('room',room_name)
+            return redirect('room',room_name,current_user.username)
         else:
             return redirect('chat')
     except Exception as e:
@@ -175,3 +181,4 @@ def filter(room_name):
         if i not in punctuations:
             op+=i
     return op
+        
