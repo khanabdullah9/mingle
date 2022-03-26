@@ -1,5 +1,5 @@
 import re
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .models import ChatRoom,Message
 from accounts.models import Account
@@ -44,19 +44,18 @@ def chat(request):
 PARAMS: (string) room_name -> model name of the chat room
 (string) current_user -> username of the current logged in user
 """
-def room(request,room_name,current_user):
-    # print("[PROMPT] current_user :"+current_user)
+def room(request,room_name):
     try:
         all_images = Image.objects.all()
         all_users = Account.objects.all()
         room_obj = ChatRoom.objects.get(room_name=room_name)
         room_user_1 = room_obj.room_user_1
         room_user_2 = room_obj.room_user_2
-        # print("[PROMPT] room_user_1.username:"+room_user_1.username)
-        # print("[PROMPT] room_user_2.username:"+room_user_2.username)
-        if room_user_1.username != current_user and room_user_2.username != current_user:
+        if room_user_1.username != request.user.username and room_user_2.username != request.user.username:
             return redirect('chat')
         room_messages = Message.objects.filter(room_name=room_obj)
+        # room_messages = []
+        # all_messages = 
         current_user = Account.objects.get(email=str(request.user))
         profile = Profile.objects.get(user=current_user)
         user_following = []
@@ -145,8 +144,8 @@ def load_room(request,partner):
         room_name = get_or_create_room_name(request,current_user.email,partner)
         chat_room = ChatRoom.objects.get(room_name=room_name)
         if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
-            print(current_user)
-            return redirect('room',room_name,current_user.username)
+            # print(current_user)
+            return redirect('room',room_name)
         else:
             return redirect('chat')
     except Exception as e:
@@ -162,8 +161,8 @@ def load_with_room_name(request,room_name):
         current_user = Account.objects.get(email=str(request.user))
         chat_room = ChatRoom.objects.get(room_name=room_name)
         if chat_room.room_user_1 == current_user or chat_room.room_user_2 == current_user:
-            print(current_user)
-            return redirect('room',room_name,current_user.username)
+            # print(current_user)
+            return redirect('room',room_name)
         else:
             return redirect('chat')
     except Exception as e:
@@ -181,4 +180,3 @@ def filter(room_name):
         if i not in punctuations:
             op+=i
     return op
-        

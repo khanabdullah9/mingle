@@ -2,9 +2,8 @@
 {% load static %}
 {% block content %}
 <style>
-    #bg-div{
-        background-image:url('{% static "images/mingle_bg_2.jpg" %}');
-        height:637px;
+    body{
+        background-color: aliceblue;
     }
     .banner-btn {
         /*border: 1px solid #fff;*/
@@ -33,23 +32,14 @@
     }
 </style>
 
-<div id="bg-div" class="container-fluid" >
-    <div  id="my-card" class="row">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <p id="quote">Create your own world!</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <center><a id="button" href="{% url 'signup' %}" class="banner-btn btn">Start mingling</a></center>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div  class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <center><img src="{% static "images/mingle_bg_4.jpg" %}" width="300px;" style="padding-top:100px;margin-left:25em"></center>
+        </div>
+        <div class="col-md-6" style="padding-top:200px;">
+            <p style="margin-left:1.5em;color:#9b2727">Create your own world!</p>
+           <a href="{% url 'signup' %}" id="button" class="btn banner-btn">Start mingling</a>
         </div>
     </div>
 </div>
