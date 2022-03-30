@@ -20,8 +20,10 @@ from UserProfile.views import create_profile
 from UserProfile.models import Profile
 from exception_handling.views import log_exception
 from exception_handling.models import ExceptionLog
+import socket
 
 # Create your views here.
+"""To register a user"""
 def signup(request):
     try:
         custom_user_id = ''.join(random.choices(string.ascii_uppercase+string.digits,k=10))
@@ -62,6 +64,10 @@ def signup(request):
             'form':form,
         }
         return render(request,'signup.html',context)
+    except socket.gaierror:
+        new_acc = Account.objects.get(email=email)
+        new_acc.delete()
+        return render(request,"no_internet.html")
     except Exception as e:
         log_exception(request,e,view_name='signup')
         return render(request,"error.html")
@@ -87,7 +93,7 @@ def login(request):
         log_exception(request,e,view_name="login")
         return render(request,"error.html")
 
-
+    
 @login_required(login_url='login')
 def logout(request):
     try:

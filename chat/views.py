@@ -1,4 +1,5 @@
 import re
+from wsgiref.util import request_uri
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from .models import ChatRoom,Message
@@ -46,16 +47,14 @@ PARAMS: (string) room_name -> model name of the chat room
 """
 def room(request,room_name):
     try:
-        all_images = Image.objects.all()
         all_users = Account.objects.all()
         room_obj = ChatRoom.objects.get(room_name=room_name)
         room_user_1 = room_obj.room_user_1
         room_user_2 = room_obj.room_user_2
+        all_images = Image.objects.all()
         if room_user_1.username != request.user.username and room_user_2.username != request.user.username:
             return redirect('chat')
         room_messages = Message.objects.filter(room_name=room_obj)
-        # room_messages = []
-        # all_messages = 
         current_user = Account.objects.get(email=str(request.user))
         profile = Profile.objects.get(user=current_user)
         user_following = []
@@ -69,6 +68,22 @@ def room(request,room_name):
         query = profile.user_is_following.all()
         for i in query:
             user_following.append(i)
+        pp_default = Image.objects.get(image_id='pp_default').image.url
+        current_user_pp = []
+        friend_pp = []
+        if room_user_1.email == str(request.user):
+            if Image.objects.filter(user=room_user_1,image_id='pp_'+room_user_1.username).exists():
+                current_user_pp.append(Image.objects.get(user=room_user_1,image_id='pp_'+room_user_1.username))
+            if Image.objects.filter(user=room_user_2,image_id='pp_'+room_user_2.username).exists():
+                friend_pp.append(Image.objects.get(user=room_user_2,image_id='pp_'+room_user_2.username))
+        elif room_user_2.email == str(request.user):
+            if Image.objects.filter(user=room_user_2,image_id='pp_'+room_user_2.username).exists():
+                current_user_pp.append(Image.objects.get(user=room_user_2,image_id='pp_'+room_user_2.username))
+            if Image.objects.filter(user=room_user_1,image_id='pp_'+room_user_1.username).exists():
+                friend_pp.append(Image.objects.get(user=room_user_1,image_id='pp_'+room_user_1.username))
+        # print("***Profile pictures***")
+        # print(current_user_pp)
+        # print(friend_pp)
         context={
             'username':current_user.username,
             'room_name':room_name,
@@ -79,6 +94,9 @@ def room(request,room_name):
             'friends':friends,
             'all_users':all_users,
             'all_images':all_images,
+            'pp_default':pp_default,
+            'current_user_pp':current_user_pp,
+            'friend_pp':friend_pp,
         }
         return render(request,"chat.html",context)
     except Exception as e:

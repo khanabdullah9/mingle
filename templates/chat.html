@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Chat Room{% endblock %}
 {% block head %}
 {% endblock %}
@@ -54,49 +55,27 @@
                             <div style="height:500px;overflow:hidden;overflow-y:scroll;margin-top:10px;margin-bottom:100px;">
                                 <div class="col-sm-10 mx-auto">
                                     <!-- <div class="overflow-auto"> -->
-                            {% if room_messages %}
+                                        {% if room_messages %}
                             {% for m in room_messages %}
                             {% if m.message_sender.username == request.user.username %}
-
-                            {% if all_images %}
-                            {% for ai in all_images %}
-                            {% with "pp_"|add:m.message_sender.username as custom_image_id %}
-                            {% if ai.image_id == custom_image_id %}
-                            <b><p style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large"  ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.time}})</p> </b>
-                             {% endif %}<!--66-->
-                            {% endwith %}<!--65-->
-                            {% endfor %}<!--64-->
-                            {% endif %}<!--63-->
-                            {% else %}<!--61-->
-                            
-                            {% if all_images %}
-                            {% for ai in all_images %}
-                            {% with "pp_"|add:m.message_sender.username as custom_image_id_2 %}
-                            {% if ai.image_id == custom_image_id_2 %}
-                            <b><p style="border:none;outline:none;text-align:left;color:black;font-family:'Courier New', Courier, monospace;font-size:large"   ><img src="{{ai.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> <b>{{m.message}}</b>  ({{m.time}})</p>
-                            {% endif %}<!--77-->
-                            {% endwith %}<!--76-->
-                            {% endfor %}<!--75-->
-                            {% endif %}<!--74-->
-                            <!----------->
+                            {% if current_user_pp %}
+                            {% for cup in current_user_pp %}
+                            <b><p style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large"  ><img src="{{cup.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.time}})</p> </b>
+                            {% endfor %}<!--62-->
+                            {% else %}
+                            <b><p style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large"  ><img src="{% static 'images/blank_pp.jpg' %}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.time}})</p> </b>
                             {% endif %}<!--61-->
-                            {% endfor %}<!--60-->
-                            {% endif %}<!--59-->
-                            <!----------->
-                            {% if room_messages %}
-                            {% for m2 in room_messages %}
-                            {% if all_images %}
-                            {% for ai in all_images %}
-                            {% with "pp_"|add:m2.message_sender.username as custom_image_id_3 %}
-                            {% if ai.image_id == custom_image_id_3 %}
-                            <b><p id="text-box" style="border:none;outline:none;text-align:right;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large" id="chat-text-box" ></p></b>
-                            {% endif %}<!--85-->
-                            {% endwith %}<!--86-->
-                            {% endfor %}<!--87-->
-                            {% endif %}<!--88-->
-                            <!---->
-                            {% endfor %}<!--90-->
-                            {% endif %}<!--89-->
+                            {% else %}<!--60-->
+                            {% if friend_pp %}
+                            {% for fp in friend_pp %}
+                            <b><p style="border:none;outline:none;text-align:left;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large"  ><img src="{{fp.image.url}}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.time}})</p> </b>
+                            {% endfor %}<!--70-->
+                            {% else %}<!--69-->
+                            <b><p style="border:none;outline:none;text-align:left;color:#9b2727;font-family:'Courier New', Courier, monospace;font-size:large"  ><img src="{% static 'images/blank_pp.jpg' %}" width="40" height="50" alt="" style="border-radius:50%"> {{m.message}} ({{m.time}})</p> </b>
+                            {% endif %}<!--61-->
+                            {% endif %}<!--60-->
+                            {% endfor %}<!--59-->
+                            {% endif %}<!--57-->
                            <br>
                         </div>
                             </div>

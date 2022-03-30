@@ -14,5 +14,8 @@ class ExceptionLog(models.Model):
     # def __str__(self):
     #     return self.exception_message
 
+    # def __str__(self):
+    #     return str(self.exception_time)
+
     def __str__(self):
-        return str(self.exception_time)
+        return self.exception_message+"  "+str(self.exception_time)

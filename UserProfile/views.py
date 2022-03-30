@@ -14,6 +14,7 @@ from chat.models import ChatRoom,Message
 import traceback
 from exception_handling.views import log_exception
 from exception_handling.models import ExceptionLog
+from pathlib import Path
 
 # Create your views here.
 def create_profile(request,user):
@@ -225,7 +226,7 @@ def search(request):
                         user_email = user.email
                         return redirect('view_profile',user_email)  
                 except Exception as e:
-                    messages.error(request,"Acount does not exist!")
+                    messages.warning(request,"Acount does not exist!")
         query = Account.objects.all()
         all_profiles = []
         for x in query:
@@ -493,3 +494,6 @@ def delete_profile(request):
     except Exception as e:
         log_exception(request,e,view_name="delete_profile")
         return render(request,"error.html")
+
+
+    
